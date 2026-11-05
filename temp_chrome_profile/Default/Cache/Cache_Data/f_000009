@@ -1,0 +1,426 @@
+import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/src/pages/ExcelBackupPage.jsx");const React = __vite__cjsImport0_react; const useState = __vite__cjsImport0_react["useState"]; const useEffect = __vite__cjsImport0_react["useEffect"]; const useRef = __vite__cjsImport0_react["useRef"];const _jsxDEV = __vite__cjsImport5_react_jsxDevRuntime["jsxDEV"];import __vite__cjsImport0_react from "/node_modules/.vite/deps/react.js?v=67eb6223";
+import { FileSpreadsheet, Upload, Download, AlertTriangle, CheckCircle, Info, Database, RefreshCw } from "/node_modules/.vite/deps/lucide-react.js?v=67eb6223";
+import { localDbService } from "/src/db/mabDb.js?t=1793881993964";
+import { excelBackupService } from "/src/services/excelBackupService.js";
+import "/src/pages/ExcelBackupPage.css";
+var _jsxFileName = "E:/MBA Traders/frontend/src/pages/ExcelBackupPage.jsx";
+import __vite__cjsImport5_react_jsxDevRuntime from "/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=67eb6223";
+var _s = $RefreshSig$();
+export default function ExcelBackupPage() {
+	_s();
+	const [billsCount, setBillsCount] = useState(0);
+	const [isExporting, setIsExporting] = useState(false);
+	const [isRestoring, setIsRestoring] = useState(false);
+	const [notification, setNotification] = useState(null);
+	const fileInputRef = useRef(null);
+	const showToast = (message, type = "success") => {
+		setNotification({
+			message,
+			type
+		});
+		setTimeout(() => setNotification(null), 5e3);
+	};
+	const loadStats = async () => {
+		try {
+			const all = await localDbService.getAllBills();
+			setBillsCount(all.length);
+		} catch (e) {
+			console.error(e);
+		}
+	};
+	useEffect(() => {
+		loadStats();
+	}, []);
+	// Export Backup Handler
+	const handleExport = async () => {
+		setIsExporting(true);
+		try {
+			const bills = await localDbService.getAllBills();
+			if (bills.length === 0) {
+				showToast("No bills available for backup. Please create a bill first.", "error");
+				return;
+			}
+			const res = await excelBackupService.exportBackup(bills);
+			showToast(`Success! Backup of ${res.count} bills saved to '${res.filename}'.`);
+		} catch (err) {
+			console.error(err);
+			showToast(`Error generating backup: ${err.message}`, "error");
+		} finally {
+			setIsExporting(false);
+		}
+	};
+	// Restore Backup Handler
+	const handleFileChange = async (e) => {
+		const file = e.target.files?.[0];
+		if (!file) return;
+		if (!window.confirm(`Are you sure you want to restore bills from '${file.name}'?`)) {
+			e.target.value = "";
+			return;
+		}
+		setIsRestoring(true);
+		try {
+			const restoredBills = await excelBackupService.restoreBackup(file);
+			const overwrite = window.confirm(`Found ${restoredBills.length} bills in file.\n\n` + `Click 'OK' to merge with existing records.\n` + `Click 'Cancel' to abort.`);
+			if (overwrite === null) {
+				return;
+			}
+			await localDbService.restoreBills(restoredBills, false);
+			await loadStats();
+			showToast(`Success! ${restoredBills.length} bills restored successfully.`);
+		} catch (err) {
+			console.error(err);
+			showToast(`Restore error: ${err.message}`, "error");
+		} finally {
+			setIsRestoring(false);
+			if (fileInputRef.current) fileInputRef.current.value = "";
+		}
+	};
+	return /* @__PURE__ */ _jsxDEV("div", {
+		className: "backup-page-container",
+		children: [
+			notification && /* @__PURE__ */ _jsxDEV("div", {
+				className: `notification-toast toast-${notification.type}`,
+				children: [notification.type === "success" ? /* @__PURE__ */ _jsxDEV(CheckCircle, { size: 18 }, void 0, false, {
+					fileName: _jsxFileName,
+					lineNumber: 102,
+					columnNumber: 13
+				}, this) : /* @__PURE__ */ _jsxDEV(AlertTriangle, { size: 18 }, void 0, false, {
+					fileName: _jsxFileName,
+					lineNumber: 104,
+					columnNumber: 13
+				}, this), /* @__PURE__ */ _jsxDEV("span", { children: notification.message }, void 0, false, {
+					fileName: _jsxFileName,
+					lineNumber: 106,
+					columnNumber: 11
+				}, this)]
+			}, void 0, true, {
+				fileName: _jsxFileName,
+				lineNumber: 100,
+				columnNumber: 9
+			}, this),
+			/* @__PURE__ */ _jsxDEV("div", {
+				className: "backup-header-card",
+				children: [/* @__PURE__ */ _jsxDEV("div", {
+					className: "header-icon-wrap",
+					children: /* @__PURE__ */ _jsxDEV(FileSpreadsheet, {
+						size: 32,
+						className: "text-emerald"
+					}, void 0, false, {
+						fileName: _jsxFileName,
+						lineNumber: 113,
+						columnNumber: 11
+					}, this)
+				}, void 0, false, {
+					fileName: _jsxFileName,
+					lineNumber: 112,
+					columnNumber: 9
+				}, this), /* @__PURE__ */ _jsxDEV("div", { children: [/* @__PURE__ */ _jsxDEV("h2", { children: "Excel Backup & Data Management" }, void 0, false, {
+					fileName: _jsxFileName,
+					lineNumber: 116,
+					columnNumber: 11
+				}, this), /* @__PURE__ */ _jsxDEV("p", {
+					className: "backup-subtext",
+					children: "Safely download an Excel (.xlsx) backup of all bills or restore records from a previous backup file."
+				}, void 0, false, {
+					fileName: _jsxFileName,
+					lineNumber: 117,
+					columnNumber: 11
+				}, this)] }, void 0, true, {
+					fileName: _jsxFileName,
+					lineNumber: 115,
+					columnNumber: 9
+				}, this)]
+			}, void 0, true, {
+				fileName: _jsxFileName,
+				lineNumber: 111,
+				columnNumber: 7
+			}, this),
+			/* @__PURE__ */ _jsxDEV("div", {
+				className: "reminder-banner",
+				children: [/* @__PURE__ */ _jsxDEV(Info, {
+					size: 22,
+					className: "reminder-icon"
+				}, void 0, false, {
+					fileName: _jsxFileName,
+					lineNumber: 125,
+					columnNumber: 9
+				}, this), /* @__PURE__ */ _jsxDEV("div", {
+					className: "reminder-content",
+					children: [/* @__PURE__ */ _jsxDEV("strong", { children: "Important Backup Reminder:" }, void 0, false, {
+						fileName: _jsxFileName,
+						lineNumber: 127,
+						columnNumber: 11
+					}, this), /* @__PURE__ */ _jsxDEV("p", { children: ["M.A.B TRADERS stores all billing data directly in your device's browser memory (IndexedDB) with zero server dependence. To safeguard against accidental browser history clearance or device issues, ", /* @__PURE__ */ _jsxDEV("strong", { children: "regularly download an Excel backup (weekly or monthly) and keep a copy on a pendrive or email." }, void 0, false, {
+						fileName: _jsxFileName,
+						lineNumber: 130,
+						columnNumber: 89
+					}, this)] }, void 0, true, {
+						fileName: _jsxFileName,
+						lineNumber: 128,
+						columnNumber: 11
+					}, this)]
+				}, void 0, true, {
+					fileName: _jsxFileName,
+					lineNumber: 126,
+					columnNumber: 9
+				}, this)]
+			}, void 0, true, {
+				fileName: _jsxFileName,
+				lineNumber: 124,
+				columnNumber: 7
+			}, this),
+			/* @__PURE__ */ _jsxDEV("div", {
+				className: "device-notice-card",
+				children: [/* @__PURE__ */ _jsxDEV(Database, {
+					size: 20,
+					className: "notice-icon"
+				}, void 0, false, {
+					fileName: _jsxFileName,
+					lineNumber: 137,
+					columnNumber: 9
+				}, this), /* @__PURE__ */ _jsxDEV("div", { children: [/* @__PURE__ */ _jsxDEV("strong", { children: "Notice: Device-Local Data Storage" }, void 0, false, {
+					fileName: _jsxFileName,
+					lineNumber: 139,
+					columnNumber: 11
+				}, this), /* @__PURE__ */ _jsxDEV("p", { children: [
+					"Data is stored locally on each device. To transfer bills between mobile and laptop: export an Excel backup on the source device and use ",
+					/* @__PURE__ */ _jsxDEV("em", { children: "'Restore from Excel Backup'" }, void 0, false, {
+						fileName: _jsxFileName,
+						lineNumber: 141,
+						columnNumber: 149
+					}, this),
+					" on the destination device."
+				] }, void 0, true, {
+					fileName: _jsxFileName,
+					lineNumber: 140,
+					columnNumber: 11
+				}, this)] }, void 0, true, {
+					fileName: _jsxFileName,
+					lineNumber: 138,
+					columnNumber: 9
+				}, this)]
+			}, void 0, true, {
+				fileName: _jsxFileName,
+				lineNumber: 136,
+				columnNumber: 7
+			}, this),
+			/* @__PURE__ */ _jsxDEV("div", {
+				className: "backup-actions-grid",
+				children: [/* @__PURE__ */ _jsxDEV("div", {
+					className: "action-card export-card",
+					children: [
+						/* @__PURE__ */ _jsxDEV("div", {
+							className: "card-badge",
+							children: "Step 1"
+						}, void 0, false, {
+							fileName: _jsxFileName,
+							lineNumber: 150,
+							columnNumber: 11
+						}, this),
+						/* @__PURE__ */ _jsxDEV("div", {
+							className: "card-top-icon",
+							children: /* @__PURE__ */ _jsxDEV(Download, {
+								size: 36,
+								className: "text-emerald"
+							}, void 0, false, {
+								fileName: _jsxFileName,
+								lineNumber: 152,
+								columnNumber: 13
+							}, this)
+						}, void 0, false, {
+							fileName: _jsxFileName,
+							lineNumber: 151,
+							columnNumber: 11
+						}, this),
+						/* @__PURE__ */ _jsxDEV("h3", { children: "Download Excel Backup" }, void 0, false, {
+							fileName: _jsxFileName,
+							lineNumber: 154,
+							columnNumber: 11
+						}, this),
+						/* @__PURE__ */ _jsxDEV("p", {
+							className: "card-desc",
+							children: [
+								"Download complete multi-sheet Excel (.xlsx) backup including bill summaries, itemized produce bags, weights, rates, and detailed expense deductions for all ",
+								/* @__PURE__ */ _jsxDEV("strong", { children: billsCount }, void 0, false, {
+									fileName: _jsxFileName,
+									lineNumber: 156,
+									columnNumber: 169
+								}, this),
+								" saved bills."
+							]
+						}, void 0, true, {
+							fileName: _jsxFileName,
+							lineNumber: 155,
+							columnNumber: 11
+						}, this),
+						/* @__PURE__ */ _jsxDEV("div", {
+							className: "card-meta",
+							children: /* @__PURE__ */ _jsxDEV("span", { children: ["Total Bills Available: ", /* @__PURE__ */ _jsxDEV("strong", { children: billsCount }, void 0, false, {
+								fileName: _jsxFileName,
+								lineNumber: 159,
+								columnNumber: 42
+							}, this)] }, void 0, true, {
+								fileName: _jsxFileName,
+								lineNumber: 159,
+								columnNumber: 13
+							}, this)
+						}, void 0, false, {
+							fileName: _jsxFileName,
+							lineNumber: 158,
+							columnNumber: 11
+						}, this),
+						/* @__PURE__ */ _jsxDEV("button", {
+							type: "button",
+							className: "btn-backup-action btn-export",
+							onClick: handleExport,
+							disabled: isExporting || billsCount === 0,
+							children: [/* @__PURE__ */ _jsxDEV(FileSpreadsheet, { size: 18 }, void 0, false, {
+								fileName: _jsxFileName,
+								lineNumber: 167,
+								columnNumber: 13
+							}, this), /* @__PURE__ */ _jsxDEV("span", { children: isExporting ? "Generating Backup..." : "Export Excel Backup" }, void 0, false, {
+								fileName: _jsxFileName,
+								lineNumber: 168,
+								columnNumber: 13
+							}, this)]
+						}, void 0, true, {
+							fileName: _jsxFileName,
+							lineNumber: 161,
+							columnNumber: 11
+						}, this)
+					]
+				}, void 0, true, {
+					fileName: _jsxFileName,
+					lineNumber: 149,
+					columnNumber: 9
+				}, this), /* @__PURE__ */ _jsxDEV("div", {
+					className: "action-card restore-card",
+					children: [
+						/* @__PURE__ */ _jsxDEV("div", {
+							className: "card-badge",
+							children: "Step 2"
+						}, void 0, false, {
+							fileName: _jsxFileName,
+							lineNumber: 174,
+							columnNumber: 11
+						}, this),
+						/* @__PURE__ */ _jsxDEV("div", {
+							className: "card-top-icon",
+							children: /* @__PURE__ */ _jsxDEV(Upload, {
+								size: 36,
+								className: "text-blue"
+							}, void 0, false, {
+								fileName: _jsxFileName,
+								lineNumber: 176,
+								columnNumber: 13
+							}, this)
+						}, void 0, false, {
+							fileName: _jsxFileName,
+							lineNumber: 175,
+							columnNumber: 11
+						}, this),
+						/* @__PURE__ */ _jsxDEV("h3", { children: "Restore from Excel Backup" }, void 0, false, {
+							fileName: _jsxFileName,
+							lineNumber: 178,
+							columnNumber: 11
+						}, this),
+						/* @__PURE__ */ _jsxDEV("p", {
+							className: "card-desc",
+							children: "Select a previously exported M.A.B TRADERS Excel backup file (.xlsx) to restore billing records into this application."
+						}, void 0, false, {
+							fileName: _jsxFileName,
+							lineNumber: 179,
+							columnNumber: 11
+						}, this),
+						/* @__PURE__ */ _jsxDEV("div", {
+							className: "card-meta",
+							children: /* @__PURE__ */ _jsxDEV("span", { children: ["Accepted Format: ", /* @__PURE__ */ _jsxDEV("strong", { children: ".xlsx" }, void 0, false, {
+								fileName: _jsxFileName,
+								lineNumber: 183,
+								columnNumber: 36
+							}, this)] }, void 0, true, {
+								fileName: _jsxFileName,
+								lineNumber: 183,
+								columnNumber: 13
+							}, this)
+						}, void 0, false, {
+							fileName: _jsxFileName,
+							lineNumber: 182,
+							columnNumber: 11
+						}, this),
+						/* @__PURE__ */ _jsxDEV("input", {
+							type: "file",
+							ref: fileInputRef,
+							onChange: handleFileChange,
+							accept: ".xlsx",
+							style: { display: "none" }
+						}, void 0, false, {
+							fileName: _jsxFileName,
+							lineNumber: 185,
+							columnNumber: 11
+						}, this),
+						/* @__PURE__ */ _jsxDEV("button", {
+							type: "button",
+							className: "btn-backup-action btn-restore",
+							onClick: () => fileInputRef.current?.click(),
+							disabled: isRestoring,
+							children: [/* @__PURE__ */ _jsxDEV(Upload, { size: 18 }, void 0, false, {
+								fileName: _jsxFileName,
+								lineNumber: 198,
+								columnNumber: 13
+							}, this), /* @__PURE__ */ _jsxDEV("span", { children: isRestoring ? "Restoring Records..." : "Restore from Excel Backup" }, void 0, false, {
+								fileName: _jsxFileName,
+								lineNumber: 199,
+								columnNumber: 13
+							}, this)]
+						}, void 0, true, {
+							fileName: _jsxFileName,
+							lineNumber: 192,
+							columnNumber: 11
+						}, this)
+					]
+				}, void 0, true, {
+					fileName: _jsxFileName,
+					lineNumber: 173,
+					columnNumber: 9
+				}, this)]
+			}, void 0, true, {
+				fileName: _jsxFileName,
+				lineNumber: 147,
+				columnNumber: 7
+			}, this)
+		]
+	}, void 0, true, {
+		fileName: _jsxFileName,
+		lineNumber: 97,
+		columnNumber: 5
+	}, this);
+}
+_s(ExcelBackupPage, "3d2j1Ft9gM8l1qKwNG3i5FALxdE=");
+_c = ExcelBackupPage;
+var _c;
+$RefreshReg$(_c, "ExcelBackupPage");
+import * as RefreshRuntime from "/@react-refresh";
+const inWebWorker = typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope;
+import * as __vite_react_currentExports from "/src/pages/ExcelBackupPage.jsx?t=1793881993964";
+if (import.meta.hot && !inWebWorker) {
+  if (!window.$RefreshReg$) {
+    throw new Error(
+      "@vitejs/plugin-react can't detect preamble. Something is wrong."
+    );
+  }
+
+  const currentExports = __vite_react_currentExports;
+  queueMicrotask(() => {
+    RefreshRuntime.registerExportsForReactRefresh("E:/MBA Traders/frontend/src/pages/ExcelBackupPage.jsx", currentExports);
+    import.meta.hot.accept((nextExports) => {
+      if (!nextExports) return;
+      const invalidateMessage = RefreshRuntime.validateRefreshBoundaryAndEnqueueUpdate("E:/MBA Traders/frontend/src/pages/ExcelBackupPage.jsx", currentExports, nextExports);
+      if (invalidateMessage) import.meta.hot.invalidate(invalidateMessage);
+    });
+  });
+}
+function $RefreshReg$(type, id) { return RefreshRuntime.register(type, "E:/MBA Traders/frontend/src/pages/ExcelBackupPage.jsx" + ' ' + id); }
+function $RefreshSig$() { return RefreshRuntime.createSignatureFunctionForTransform(); }
+
+//# sourceMappingURL=data:application/json;base64,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UGFnZS5qc3giXSwidmVyc2lvbiI6Mywic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlLCB1c2VFZmZlY3QsIHVzZVJlZiB9IGZyb20gJ3JlYWN0JztcbmltcG9ydCB7IFxuICBGaWxlU3ByZWFkc2hlZXQsIFxuICBVcGxvYWQsIFxuICBEb3dubG9hZCwgXG4gIEFsZXJ0VHJpYW5nbGUsIFxuICBDaGVja0NpcmNsZSwgXG4gIEluZm8sIFxuICBEYXRhYmFzZSwgXG4gIFJlZnJlc2hDdyBcbn0gZnJvbSAnbHVjaWRlLXJlYWN0JztcbmltcG9ydCB7IGxvY2FsRGJTZXJ2aWNlIH0gZnJvbSAnLi4vZGIvbWFiRGInO1xuaW1wb3J0IHsgZXhjZWxCYWNrdXBTZXJ2aWNlIH0gZnJvbSAnLi4vc2VydmljZXMvZXhjZWxCYWNrdXBTZXJ2aWNlJztcbmltcG9ydCAnLi9FeGNlbEJhY2t1cFBhZ2UuY3NzJztcblxuZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gRXhjZWxCYWNrdXBQYWdlKCkge1xuICBjb25zdCBbYmlsbHNDb3VudCwgc2V0QmlsbHNDb3VudF0gPSB1c2VTdGF0ZSgwKTtcbiAgY29uc3QgW2lzRXhwb3J0aW5nLCBzZXRJc0V4cG9ydGluZ10gPSB1c2VTdGF0ZShmYWxzZSk7XG4gIGNvbnN0IFtpc1Jlc3RvcmluZywgc2V0SXNSZXN0b3JpbmddID0gdXNlU3RhdGUoZmFsc2UpO1xuICBjb25zdCBbbm90aWZpY2F0aW9uLCBzZXROb3RpZmljYXRpb25dID0gdXNlU3RhdGUobnVsbCk7XG4gIGNvbnN0IGZpbGVJbnB1dFJlZiA9IHVzZVJlZihudWxsKTtcblxuICBjb25zdCBzaG93VG9hc3QgPSAobWVzc2FnZSwgdHlwZSA9ICdzdWNjZXNzJykgPT4ge1xuICAgIHNldE5vdGlmaWNhdGlvbih7IG1lc3NhZ2UsIHR5cGUgfSk7XG4gICAgc2V0VGltZW91dCgoKSA9PiBzZXROb3RpZmljYXRpb24obnVsbCksIDUwMDApO1xuICB9O1xuXG4gIGNvbnN0IGxvYWRTdGF0cyA9IGFzeW5jICgpID0+IHtcbiAgICB0cnkge1xuICAgICAgY29uc3QgYWxsID0gYXdhaXQgbG9jYWxEYlNlcnZpY2UuZ2V0QWxsQmlsbHMoKTtcbiAgICAgIHNldEJpbGxzQ291bnQoYWxsLmxlbmd0aCk7XG4gICAgfSBjYXRjaCAoZSkge1xuICAgICAgY29uc29sZS5lcnJvcihlKTtcbiAgICB9XG4gIH07XG5cbiAgdXNlRWZmZWN0KCgpID0+IHtcbiAgICBsb2FkU3RhdHMoKTtcbiAgfSwgW10pO1xuXG4gIC8vIEV4cG9ydCBCYWNrdXAgSGFuZGxlclxuICBjb25zdCBoYW5kbGVFeHBvcnQgPSBhc3luYyAoKSA9PiB7XG4gICAgc2V0SXNFeHBvcnRpbmcodHJ1ZSk7XG4gICAgdHJ5IHtcbiAgICAgIGNvbnN0IGJpbGxzID0gYXdhaXQgbG9jYWxEYlNlcnZpY2UuZ2V0QWxsQmlsbHMoKTtcbiAgICAgIGlmIChiaWxscy5sZW5ndGggPT09IDApIHtcbiAgICAgICAgc2hvd1RvYXN0KCdObyBiaWxscyBhdmFpbGFibGUgZm9yIGJhY2t1cC4gUGxlYXNlIGNyZWF0ZSBhIGJpbGwgZmlyc3QuJywgJ2Vycm9yJyk7XG4gICAgICAgIHJldHVybjtcbiAgICAgIH1cbiAgICAgIGNvbnN0IHJlcyA9IGF3YWl0IGV4Y2VsQmFja3VwU2VydmljZS5leHBvcnRCYWNrdXAoYmlsbHMpO1xuICAgICAgc2hvd1RvYXN0KGBTdWNjZXNzISBCYWNrdXAgb2YgJHtyZXMuY291bnR9IGJpbGxzIHNhdmVkIHRvICcke3Jlcy5maWxlbmFtZX0nLmApO1xuICAgIH0gY2F0Y2ggKGVycikge1xuICAgICAgY29uc29sZS5lcnJvcihlcnIpO1xuICAgICAgc2hvd1RvYXN0KGBFcnJvciBnZW5lcmF0aW5nIGJhY2t1cDogJHtlcnIubWVzc2FnZX1gLCAnZXJyb3InKTtcbiAgICB9IGZpbmFsbHkge1xuICAgICAgc2V0SXNFeHBvcnRpbmcoZmFsc2UpO1xuICAgIH1cbiAgfTtcblxuICAvLyBSZXN0b3JlIEJhY2t1cCBIYW5kbGVyXG4gIGNvbnN0IGhhbmRsZUZpbGVDaGFuZ2UgPSBhc3luYyAoZSkgPT4ge1xuICAgIGNvbnN0IGZpbGUgPSBlLnRhcmdldC5maWxlcz8uWzBdO1xuICAgIGlmICghZmlsZSkgcmV0dXJuO1xuXG4gICAgaWYgKCF3aW5kb3cuY29uZmlybShgQXJlIHlvdSBzdXJlIHlvdSB3YW50IHRvIHJlc3RvcmUgYmlsbHMgZnJvbSAnJHtmaWxlLm5hbWV9Jz9gKSkge1xuICAgICAgZS50YXJnZXQudmFsdWUgPSAnJztcbiAgICAgIHJldHVybjtcbiAgICB9XG5cbiAgICBzZXRJc1Jlc3RvcmluZyh0cnVlKTtcbiAgICB0cnkge1xuICAgICAgY29uc3QgcmVzdG9yZWRCaWxscyA9IGF3YWl0IGV4Y2VsQmFja3VwU2VydmljZS5yZXN0b3JlQmFja3VwKGZpbGUpO1xuICAgICAgXG4gICAgICBjb25zdCBvdmVyd3JpdGUgPSB3aW5kb3cuY29uZmlybShcbiAgICAgICAgYEZvdW5kICR7cmVzdG9yZWRCaWxscy5sZW5ndGh9IGJpbGxzIGluIGZpbGUuXFxuXFxuYCArXG4gICAgICAgIGBDbGljayAnT0snIHRvIG1lcmdlIHdpdGggZXhpc3RpbmcgcmVjb3Jkcy5cXG5gICtcbiAgICAgICAgYENsaWNrICdDYW5jZWwnIHRvIGFib3J0LmBcbiAgICAgICk7XG5cbiAgICAgIGlmIChvdmVyd3JpdGUgPT09IG51bGwpIHtcbiAgICAgICAgcmV0dXJuO1xuICAgICAgfVxuXG4gICAgICBhd2FpdCBsb2NhbERiU2VydmljZS5yZXN0b3JlQmlsbHMocmVzdG9yZWRCaWxscywgZmFsc2UpO1xuICAgICAgYXdhaXQgbG9hZFN0YXRzKCk7XG4gICAgICBzaG93VG9hc3QoYFN1Y2Nlc3MhICR7cmVzdG9yZWRCaWxscy5sZW5ndGh9IGJpbGxzIHJlc3RvcmVkIHN1Y2Nlc3NmdWxseS5gKTtcbiAgICB9IGNhdGNoIChlcnIpIHtcbiAgICAgIGNvbnNvbGUuZXJyb3IoZXJyKTtcbiAgICAgIHNob3dUb2FzdChgUmVzdG9yZSBlcnJvcjogJHtlcnIubWVzc2FnZX1gLCAnZXJyb3InKTtcbiAgICB9IGZpbmFsbHkge1xuICAgICAgc2V0SXNSZXN0b3JpbmcoZmFsc2UpO1xuICAgICAgaWYgKGZpbGVJbnB1dFJlZi5jdXJyZW50KSBmaWxlSW5wdXRSZWYuY3VycmVudC52YWx1ZSA9ICcnO1xuICAgIH1cbiAgfTtcblxuICByZXR1cm4gKFxuICAgIDxkaXYgY2xhc3NOYW1lPVwiYmFja3VwLXBhZ2UtY29udGFpbmVyXCI+XG4gICAgICB7LyogTk9USUZJQ0FUSU9OIFRPQVNUICovfVxuICAgICAge25vdGlmaWNhdGlvbiAmJiAoXG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPXtgbm90aWZpY2F0aW9uLXRvYXN0IHRvYXN0LSR7bm90aWZpY2F0aW9uLnR5cGV9YH0+XG4gICAgICAgICAge25vdGlmaWNhdGlvbi50eXBlID09PSAnc3VjY2VzcycgPyAoXG4gICAgICAgICAgICA8Q2hlY2tDaXJjbGUgc2l6ZT17MTh9IC8+XG4gICAgICAgICAgKSA6IChcbiAgICAgICAgICAgIDxBbGVydFRyaWFuZ2xlIHNpemU9ezE4fSAvPlxuICAgICAgICAgICl9XG4gICAgICAgICAgPHNwYW4+e25vdGlmaWNhdGlvbi5tZXNzYWdlfTwvc3Bhbj5cbiAgICAgICAgPC9kaXY+XG4gICAgICApfVxuXG4gICAgICB7LyogSEVBREVSIFJJQkJPTiAqL31cbiAgICAgIDxkaXYgY2xhc3NOYW1lPVwiYmFja3VwLWhlYWRlci1jYXJkXCI+XG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiaGVhZGVyLWljb24td3JhcFwiPlxuICAgICAgICAgIDxGaWxlU3ByZWFkc2hlZXQgc2l6ZT17MzJ9IGNsYXNzTmFtZT1cInRleHQtZW1lcmFsZFwiIC8+XG4gICAgICAgIDwvZGl2PlxuICAgICAgICA8ZGl2PlxuICAgICAgICAgIDxoMj5FeGNlbCBCYWNrdXAgJiBEYXRhIE1hbmFnZW1lbnQ8L2gyPlxuICAgICAgICAgIDxwIGNsYXNzTmFtZT1cImJhY2t1cC1zdWJ0ZXh0XCI+XG4gICAgICAgICAgICBTYWZlbHkgZG93bmxvYWQgYW4gRXhjZWwgKC54bHN4KSBiYWNrdXAgb2YgYWxsIGJpbGxzIG9yIHJlc3RvcmUgcmVjb3JkcyBmcm9tIGEgcHJldmlvdXMgYmFja3VwIGZpbGUuXG4gICAgICAgICAgPC9wPlxuICAgICAgICA8L2Rpdj5cbiAgICAgIDwvZGl2PlxuXG4gICAgICB7LyogUkVHVUxBUiBCQUNLVVAgUkVNSU5ERVIgQkFOTkVSICovfVxuICAgICAgPGRpdiBjbGFzc05hbWU9XCJyZW1pbmRlci1iYW5uZXJcIj5cbiAgICAgICAgPEluZm8gc2l6ZT17MjJ9IGNsYXNzTmFtZT1cInJlbWluZGVyLWljb25cIiAvPlxuICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cInJlbWluZGVyLWNvbnRlbnRcIj5cbiAgICAgICAgICA8c3Ryb25nPkltcG9ydGFudCBCYWNrdXAgUmVtaW5kZXI6PC9zdHJvbmc+XG4gICAgICAgICAgPHA+XG4gICAgICAgICAgICBNLkEuQiBUUkFERVJTIHN0b3JlcyBhbGwgYmlsbGluZyBkYXRhIGRpcmVjdGx5IGluIHlvdXIgZGV2aWNlJ3MgYnJvd3NlciBtZW1vcnkgKEluZGV4ZWREQikgd2l0aCB6ZXJvIHNlcnZlciBkZXBlbmRlbmNlLlxuICAgICAgICAgICAgVG8gc2FmZWd1YXJkIGFnYWluc3QgYWNjaWRlbnRhbCBicm93c2VyIGhpc3RvcnkgY2xlYXJhbmNlIG9yIGRldmljZSBpc3N1ZXMsIDxzdHJvbmc+cmVndWxhcmx5IGRvd25sb2FkIGFuIEV4Y2VsIGJhY2t1cCAod2Vla2x5IG9yIG1vbnRobHkpIGFuZCBrZWVwIGEgY29weSBvbiBhIHBlbmRyaXZlIG9yIGVtYWlsLjwvc3Ryb25nPlxuICAgICAgICAgIDwvcD5cbiAgICAgICAgPC9kaXY+XG4gICAgICA8L2Rpdj5cblxuICAgICAgey8qIERFVklDRS1MT0NBTCBEQVRBIFNUT1JBR0UgTElNSVRBVElPTiBOT1RJQ0UgKi99XG4gICAgICA8ZGl2IGNsYXNzTmFtZT1cImRldmljZS1ub3RpY2UtY2FyZFwiPlxuICAgICAgICA8RGF0YWJhc2Ugc2l6ZT17MjB9IGNsYXNzTmFtZT1cIm5vdGljZS1pY29uXCIgLz5cbiAgICAgICAgPGRpdj5cbiAgICAgICAgICA8c3Ryb25nPk5vdGljZTogRGV2aWNlLUxvY2FsIERhdGEgU3RvcmFnZTwvc3Ryb25nPlxuICAgICAgICAgIDxwPlxuICAgICAgICAgICAgRGF0YSBpcyBzdG9yZWQgbG9jYWxseSBvbiBlYWNoIGRldmljZS4gVG8gdHJhbnNmZXIgYmlsbHMgYmV0d2VlbiBtb2JpbGUgYW5kIGxhcHRvcDogZXhwb3J0IGFuIEV4Y2VsIGJhY2t1cCBvbiB0aGUgc291cmNlIGRldmljZSBhbmQgdXNlIDxlbT4nUmVzdG9yZSBmcm9tIEV4Y2VsIEJhY2t1cCc8L2VtPiBvbiB0aGUgZGVzdGluYXRpb24gZGV2aWNlLlxuICAgICAgICAgIDwvcD5cbiAgICAgICAgPC9kaXY+XG4gICAgICA8L2Rpdj5cblxuICAgICAgey8qIE1BSU4gQUNUSU9OUyBHUklEICovfVxuICAgICAgPGRpdiBjbGFzc05hbWU9XCJiYWNrdXAtYWN0aW9ucy1ncmlkXCI+XG4gICAgICAgIHsvKiBBQ1RJT04gMTogRVhQT1JUICovfVxuICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImFjdGlvbi1jYXJkIGV4cG9ydC1jYXJkXCI+XG4gICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJjYXJkLWJhZGdlXCI+U3RlcCAxPC9kaXY+XG4gICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJjYXJkLXRvcC1pY29uXCI+XG4gICAgICAgICAgICA8RG93bmxvYWQgc2l6ZT17MzZ9IGNsYXNzTmFtZT1cInRleHQtZW1lcmFsZFwiIC8+XG4gICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgPGgzPkRvd25sb2FkIEV4Y2VsIEJhY2t1cDwvaDM+XG4gICAgICAgICAgPHAgY2xhc3NOYW1lPVwiY2FyZC1kZXNjXCI+XG4gICAgICAgICAgICBEb3dubG9hZCBjb21wbGV0ZSBtdWx0aS1zaGVldCBFeGNlbCAoLnhsc3gpIGJhY2t1cCBpbmNsdWRpbmcgYmlsbCBzdW1tYXJpZXMsIGl0ZW1pemVkIHByb2R1Y2UgYmFncywgd2VpZ2h0cywgcmF0ZXMsIGFuZCBkZXRhaWxlZCBleHBlbnNlIGRlZHVjdGlvbnMgZm9yIGFsbCA8c3Ryb25nPntiaWxsc0NvdW50fTwvc3Ryb25nPiBzYXZlZCBiaWxscy5cbiAgICAgICAgICA8L3A+XG4gICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJjYXJkLW1ldGFcIj5cbiAgICAgICAgICAgIDxzcGFuPlRvdGFsIEJpbGxzIEF2YWlsYWJsZTogPHN0cm9uZz57YmlsbHNDb3VudH08L3N0cm9uZz48L3NwYW4+XG4gICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgPGJ1dHRvblxuICAgICAgICAgICAgdHlwZT1cImJ1dHRvblwiXG4gICAgICAgICAgICBjbGFzc05hbWU9XCJidG4tYmFja3VwLWFjdGlvbiBidG4tZXhwb3J0XCJcbiAgICAgICAgICAgIG9uQ2xpY2s9e2hhbmRsZUV4cG9ydH1cbiAgICAgICAgICAgIGRpc2FibGVkPXtpc0V4cG9ydGluZyB8fCBiaWxsc0NvdW50ID09PSAwfVxuICAgICAgICAgID5cbiAgICAgICAgICAgIDxGaWxlU3ByZWFkc2hlZXQgc2l6ZT17MTh9IC8+XG4gICAgICAgICAgICA8c3Bhbj57aXNFeHBvcnRpbmcgPyAnR2VuZXJhdGluZyBCYWNrdXAuLi4nIDogJ0V4cG9ydCBFeGNlbCBCYWNrdXAnfTwvc3Bhbj5cbiAgICAgICAgICA8L2J1dHRvbj5cbiAgICAgICAgPC9kaXY+XG5cbiAgICAgICAgey8qIEFDVElPTiAyOiBSRVNUT1JFICovfVxuICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImFjdGlvbi1jYXJkIHJlc3RvcmUtY2FyZFwiPlxuICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiY2FyZC1iYWRnZVwiPlN0ZXAgMjwvZGl2PlxuICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiY2FyZC10b3AtaWNvblwiPlxuICAgICAgICAgICAgPFVwbG9hZCBzaXplPXszNn0gY2xhc3NOYW1lPVwidGV4dC1ibHVlXCIgLz5cbiAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICA8aDM+UmVzdG9yZSBmcm9tIEV4Y2VsIEJhY2t1cDwvaDM+XG4gICAgICAgICAgPHAgY2xhc3NOYW1lPVwiY2FyZC1kZXNjXCI+XG4gICAgICAgICAgICBTZWxlY3QgYSBwcmV2aW91c2x5IGV4cG9ydGVkIE0uQS5CIFRSQURFUlMgRXhjZWwgYmFja3VwIGZpbGUgKC54bHN4KSB0byByZXN0b3JlIGJpbGxpbmcgcmVjb3JkcyBpbnRvIHRoaXMgYXBwbGljYXRpb24uXG4gICAgICAgICAgPC9wPlxuICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiY2FyZC1tZXRhXCI+XG4gICAgICAgICAgICA8c3Bhbj5BY2NlcHRlZCBGb3JtYXQ6IDxzdHJvbmc+Lnhsc3g8L3N0cm9uZz48L3NwYW4+XG4gICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgPGlucHV0XG4gICAgICAgICAgICB0eXBlPVwiZmlsZVwiXG4gICAgICAgICAgICByZWY9e2ZpbGVJbnB1dFJlZn1cbiAgICAgICAgICAgIG9uQ2hhbmdlPXtoYW5kbGVGaWxlQ2hhbmdlfVxuICAgICAgICAgICAgYWNjZXB0PVwiLnhsc3hcIlxuICAgICAgICAgICAgc3R5bGU9e3sgZGlzcGxheTogJ25vbmUnIH19XG4gICAgICAgICAgLz5cbiAgICAgICAgICA8YnV0dG9uXG4gICAgICAgICAgICB0eXBlPVwiYnV0dG9uXCJcbiAgICAgICAgICAgIGNsYXNzTmFtZT1cImJ0bi1iYWNrdXAtYWN0aW9uIGJ0bi1yZXN0b3JlXCJcbiAgICAgICAgICAgIG9uQ2xpY2s9eygpID0+IGZpbGVJbnB1dFJlZi5jdXJyZW50Py5jbGljaygpfVxuICAgICAgICAgICAgZGlzYWJsZWQ9e2lzUmVzdG9yaW5nfVxuICAgICAgICAgID5cbiAgICAgICAgICAgIDxVcGxvYWQgc2l6ZT17MTh9IC8+XG4gICAgICAgICAgICA8c3Bhbj57aXNSZXN0b3JpbmcgPyAnUmVzdG9yaW5nIFJlY29yZHMuLi4nIDogJ1Jlc3RvcmUgZnJvbSBFeGNlbCBCYWNrdXAnfTwvc3Bhbj5cbiAgICAgICAgICA8L2J1dHRvbj5cbiAgICAgICAgPC9kaXY+XG4gICAgICA8L2Rpdj5cbiAgICA8L2Rpdj5cbiAgKTtcbn1cbiJdfQ==

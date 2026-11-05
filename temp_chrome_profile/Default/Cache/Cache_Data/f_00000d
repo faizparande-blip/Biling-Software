@@ -1,0 +1,264 @@
+import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/src/components/common/PwaInstallButton.jsx");const React = __vite__cjsImport0_react; const useState = __vite__cjsImport0_react["useState"]; const useEffect = __vite__cjsImport0_react["useEffect"];const _jsxDEV = __vite__cjsImport3_react_jsxDevRuntime["jsxDEV"]; const _Fragment = __vite__cjsImport3_react_jsxDevRuntime["Fragment"];import __vite__cjsImport0_react from "/node_modules/.vite/deps/react.js?v=67eb6223";
+import { Download, Smartphone, X } from "/node_modules/.vite/deps/lucide-react.js?v=67eb6223";
+import "/src/components/common/PwaInstallButton.css";
+var _jsxFileName = "E:/MBA Traders/frontend/src/components/common/PwaInstallButton.jsx";
+import __vite__cjsImport3_react_jsxDevRuntime from "/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=67eb6223";
+var _s = $RefreshSig$();
+export default function PwaInstallButton() {
+	_s();
+	const [deferredPrompt, setDeferredPrompt] = useState(null);
+	const [isInstalled, setIsInstalled] = useState(false);
+	const [showIosModal, setShowIosModal] = useState(false);
+	const [isIos, setIsIos] = useState(false);
+	useEffect(() => {
+		// Check if already in standalone mode
+		const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+		if (isStandalone) {
+			setIsInstalled(true);
+			return;
+		}
+		// Detect iOS
+		const userAgent = window.navigator.userAgent.toLowerCase();
+		const isIosDevice = /iphone|ipad|ipod/.test(userAgent);
+		setIsIos(isIosDevice);
+		// Capture Android / Chrome / Edge install prompt
+		const handleBeforeInstall = (e) => {
+			e.preventDefault();
+			setDeferredPrompt(e);
+		};
+		window.addEventListener("beforeinstallprompt", handleBeforeInstall);
+		window.addEventListener("appinstalled", () => {
+			setIsInstalled(true);
+			setDeferredPrompt(null);
+		});
+		return () => {
+			window.removeEventListener("beforeinstallprompt", handleBeforeInstall);
+		};
+	}, []);
+	if (isInstalled) {
+		return null;
+	}
+	const handleInstallClick = async () => {
+		if (deferredPrompt) {
+			deferredPrompt.prompt();
+			const choice = await deferredPrompt.userChoice;
+			if (choice.outcome === "accepted") {
+				setIsInstalled(true);
+			}
+			setDeferredPrompt(null);
+		} else if (isIos) {
+			setShowIosModal(true);
+		} else {
+			setShowIosModal(true);
+		}
+	};
+	return /* @__PURE__ */ _jsxDEV(_Fragment, { children: [/* @__PURE__ */ _jsxDEV("button", {
+		type: "button",
+		className: "btn-pwa-install",
+		onClick: handleInstallClick,
+		title: "Install M.A.B TRADERS Application on Phone or PC",
+		children: [/* @__PURE__ */ _jsxDEV(Smartphone, { size: 16 }, void 0, false, {
+			fileName: _jsxFileName,
+			lineNumber: 72,
+			columnNumber: 9
+		}, this), /* @__PURE__ */ _jsxDEV("span", { children: "Install App" }, void 0, false, {
+			fileName: _jsxFileName,
+			lineNumber: 73,
+			columnNumber: 9
+		}, this)]
+	}, void 0, true, {
+		fileName: _jsxFileName,
+		lineNumber: 66,
+		columnNumber: 7
+	}, this), showIosModal && /* @__PURE__ */ _jsxDEV("div", {
+		className: "install-modal-backdrop",
+		onClick: () => setShowIosModal(false),
+		children: /* @__PURE__ */ _jsxDEV("div", {
+			className: "install-modal-box",
+			onClick: (e) => e.stopPropagation(),
+			children: [
+				/* @__PURE__ */ _jsxDEV("div", {
+					className: "install-modal-header",
+					children: [/* @__PURE__ */ _jsxDEV("h3", { children: "📲 How to Install the App" }, void 0, false, {
+						fileName: _jsxFileName,
+						lineNumber: 81,
+						columnNumber: 15
+					}, this), /* @__PURE__ */ _jsxDEV("button", {
+						className: "btn-close-install",
+						onClick: () => setShowIosModal(false),
+						children: /* @__PURE__ */ _jsxDEV(X, { size: 18 }, void 0, false, {
+							fileName: _jsxFileName,
+							lineNumber: 83,
+							columnNumber: 17
+						}, this)
+					}, void 0, false, {
+						fileName: _jsxFileName,
+						lineNumber: 82,
+						columnNumber: 15
+					}, this)]
+				}, void 0, true, {
+					fileName: _jsxFileName,
+					lineNumber: 80,
+					columnNumber: 13
+				}, this),
+				/* @__PURE__ */ _jsxDEV("div", {
+					className: "install-modal-body",
+					children: isIos ? /* @__PURE__ */ _jsxDEV("ol", {
+						className: "install-steps",
+						children: [
+							/* @__PURE__ */ _jsxDEV("li", { children: [
+								"In Safari browser, tap the ",
+								/* @__PURE__ */ _jsxDEV("strong", { children: "Share Button [⎋]" }, void 0, false, {
+									fileName: _jsxFileName,
+									lineNumber: 89,
+									columnNumber: 50
+								}, this),
+								" at the bottom."
+							] }, void 0, true, {
+								fileName: _jsxFileName,
+								lineNumber: 89,
+								columnNumber: 19
+							}, this),
+							/* @__PURE__ */ _jsxDEV("li", { children: [
+								"Scroll down and tap ",
+								/* @__PURE__ */ _jsxDEV("strong", { children: "'Add to Home Screen'" }, void 0, false, {
+									fileName: _jsxFileName,
+									lineNumber: 90,
+									columnNumber: 43
+								}, this),
+								"."
+							] }, void 0, true, {
+								fileName: _jsxFileName,
+								lineNumber: 90,
+								columnNumber: 19
+							}, this),
+							/* @__PURE__ */ _jsxDEV("li", { children: [
+								"Tap ",
+								/* @__PURE__ */ _jsxDEV("strong", { children: "'Add'" }, void 0, false, {
+									fileName: _jsxFileName,
+									lineNumber: 91,
+									columnNumber: 27
+								}, this),
+								" in the top-right corner. The app will be installed on your device!"
+							] }, void 0, true, {
+								fileName: _jsxFileName,
+								lineNumber: 91,
+								columnNumber: 19
+							}, this)
+						]
+					}, void 0, true, {
+						fileName: _jsxFileName,
+						lineNumber: 88,
+						columnNumber: 17
+					}, this) : /* @__PURE__ */ _jsxDEV("ol", {
+						className: "install-steps",
+						children: [
+							/* @__PURE__ */ _jsxDEV("li", { children: [
+								"Click the ",
+								/* @__PURE__ */ _jsxDEV("strong", { children: "three dots menu (⋮)" }, void 0, false, {
+									fileName: _jsxFileName,
+									lineNumber: 95,
+									columnNumber: 33
+								}, this),
+								" in the browser's top-right corner."
+							] }, void 0, true, {
+								fileName: _jsxFileName,
+								lineNumber: 95,
+								columnNumber: 19
+							}, this),
+							/* @__PURE__ */ _jsxDEV("li", { children: [
+								"Select ",
+								/* @__PURE__ */ _jsxDEV("strong", { children: "'Install M.A.B TRADERS'" }, void 0, false, {
+									fileName: _jsxFileName,
+									lineNumber: 96,
+									columnNumber: 30
+								}, this),
+								" or ",
+								/* @__PURE__ */ _jsxDEV("strong", { children: "'Add to Home Screen'" }, void 0, false, {
+									fileName: _jsxFileName,
+									lineNumber: 96,
+									columnNumber: 74
+								}, this),
+								"."
+							] }, void 0, true, {
+								fileName: _jsxFileName,
+								lineNumber: 96,
+								columnNumber: 19
+							}, this),
+							/* @__PURE__ */ _jsxDEV("li", { children: "The app will install in one click and open like a native app!" }, void 0, false, {
+								fileName: _jsxFileName,
+								lineNumber: 97,
+								columnNumber: 19
+							}, this)
+						]
+					}, void 0, true, {
+						fileName: _jsxFileName,
+						lineNumber: 94,
+						columnNumber: 17
+					}, this)
+				}, void 0, false, {
+					fileName: _jsxFileName,
+					lineNumber: 86,
+					columnNumber: 13
+				}, this),
+				/* @__PURE__ */ _jsxDEV("div", {
+					className: "install-modal-footer",
+					children: /* @__PURE__ */ _jsxDEV("button", {
+						type: "button",
+						className: "btn-modal-got-it",
+						onClick: () => setShowIosModal(false),
+						children: "Close"
+					}, void 0, false, {
+						fileName: _jsxFileName,
+						lineNumber: 102,
+						columnNumber: 15
+					}, this)
+				}, void 0, false, {
+					fileName: _jsxFileName,
+					lineNumber: 101,
+					columnNumber: 13
+				}, this)
+			]
+		}, void 0, true, {
+			fileName: _jsxFileName,
+			lineNumber: 79,
+			columnNumber: 11
+		}, this)
+	}, void 0, false, {
+		fileName: _jsxFileName,
+		lineNumber: 78,
+		columnNumber: 9
+	}, this)] }, void 0, true, {
+		fileName: _jsxFileName,
+		lineNumber: 65,
+		columnNumber: 5
+	}, this);
+}
+_s(PwaInstallButton, "ixPNAq4yx5UTF/HY//1t/337HOM=");
+_c = PwaInstallButton;
+var _c;
+$RefreshReg$(_c, "PwaInstallButton");
+import * as RefreshRuntime from "/@react-refresh";
+const inWebWorker = typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope;
+import * as __vite_react_currentExports from "/src/components/common/PwaInstallButton.jsx";
+if (import.meta.hot && !inWebWorker) {
+  if (!window.$RefreshReg$) {
+    throw new Error(
+      "@vitejs/plugin-react can't detect preamble. Something is wrong."
+    );
+  }
+
+  const currentExports = __vite_react_currentExports;
+  queueMicrotask(() => {
+    RefreshRuntime.registerExportsForReactRefresh("E:/MBA Traders/frontend/src/components/common/PwaInstallButton.jsx", currentExports);
+    import.meta.hot.accept((nextExports) => {
+      if (!nextExports) return;
+      const invalidateMessage = RefreshRuntime.validateRefreshBoundaryAndEnqueueUpdate("E:/MBA Traders/frontend/src/components/common/PwaInstallButton.jsx", currentExports, nextExports);
+      if (invalidateMessage) import.meta.hot.invalidate(invalidateMessage);
+    });
+  });
+}
+function $RefreshReg$(type, id) { return RefreshRuntime.register(type, "E:/MBA Traders/frontend/src/components/common/PwaInstallButton.jsx" + ' ' + id); }
+function $RefreshSig$() { return RefreshRuntime.createSignatureFunctionForTransform(); }
+
+//# sourceMappingURL=data:application/json;base64,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QkFBK0I7Ozs7O1FBQUM7UUFBSSx3QkFBQyxVQUFELFlBQVEsdUJBQTRCOzs7OztRQUFDO09BQUs7Ozs7O09BQ2pHLHdCQUFDLE1BQUQsWUFBSSxnRUFBaUU7Ozs7O01BQ25FOzs7Ozs7SUFFSDs7Ozs7SUFDTCx3QkFBQyxPQUFEO0tBQUssV0FBVTtlQUNiLHdCQUFDLFVBQUQ7TUFDRSxNQUFLO01BQ0wsV0FBVTtNQUNWLGVBQWUsZ0JBQWdCLEtBQUs7Z0JBQ3JDO0tBRU87Ozs7O0lBQ0w7Ozs7O0dBQ0Y7Ozs7OztDQUNGOzs7O1NBRVA7Ozs7O0FBRU4iLCJuYW1lcyI6W10sInNvdXJjZXMiOlsiUHdhSW5zdGFsbEJ1dHRvbi5qc3giXSwidmVyc2lvbiI6Mywic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlLCB1c2VFZmZlY3QgfSBmcm9tICdyZWFjdCc7XG5pbXBvcnQgeyBEb3dubG9hZCwgU21hcnRwaG9uZSwgWCB9IGZyb20gJ2x1Y2lkZS1yZWFjdCc7XG5pbXBvcnQgJy4vUHdhSW5zdGFsbEJ1dHRvbi5jc3MnO1xuXG5leHBvcnQgZGVmYXVsdCBmdW5jdGlvbiBQd2FJbnN0YWxsQnV0dG9uKCkge1xuICBjb25zdCBbZGVmZXJyZWRQcm9tcHQsIHNldERlZmVycmVkUHJvbXB0XSA9IHVzZVN0YXRlKG51bGwpO1xuICBjb25zdCBbaXNJbnN0YWxsZWQsIHNldElzSW5zdGFsbGVkXSA9IHVzZVN0YXRlKGZhbHNlKTtcbiAgY29uc3QgW3Nob3dJb3NNb2RhbCwgc2V0U2hvd0lvc01vZGFsXSA9IHVzZVN0YXRlKGZhbHNlKTtcbiAgY29uc3QgW2lzSW9zLCBzZXRJc0lvc10gPSB1c2VTdGF0ZShmYWxzZSk7XG5cbiAgdXNlRWZmZWN0KCgpID0+IHtcbiAgICAvLyBDaGVjayBpZiBhbHJlYWR5IGluIHN0YW5kYWxvbmUgbW9kZVxuICAgIGNvbnN0IGlzU3RhbmRhbG9uZSA9XG4gICAgICB3aW5kb3cubWF0Y2hNZWRpYSgnKGRpc3BsYXktbW9kZTogc3RhbmRhbG9uZSknKS5tYXRjaGVzIHx8XG4gICAgICB3aW5kb3cubmF2aWdhdG9yLnN0YW5kYWxvbmUgPT09IHRydWU7XG5cbiAgICBpZiAoaXNTdGFuZGFsb25lKSB7XG4gICAgICBzZXRJc0luc3RhbGxlZCh0cnVlKTtcbiAgICAgIHJldHVybjtcbiAgICB9XG5cbiAgICAvLyBEZXRlY3QgaU9TXG4gICAgY29uc3QgdXNlckFnZW50ID0gd2luZG93Lm5hdmlnYXRvci51c2VyQWdlbnQudG9Mb3dlckNhc2UoKTtcbiAgICBjb25zdCBpc0lvc0RldmljZSA9IC9pcGhvbmV8aXBhZHxpcG9kLy50ZXN0KHVzZXJBZ2VudCk7XG4gICAgc2V0SXNJb3MoaXNJb3NEZXZpY2UpO1xuXG4gICAgLy8gQ2FwdHVyZSBBbmRyb2lkIC8gQ2hyb21lIC8gRWRnZSBpbnN0YWxsIHByb21wdFxuICAgIGNvbnN0IGhhbmRsZUJlZm9yZUluc3RhbGwgPSAoZSkgPT4ge1xuICAgICAgZS5wcmV2ZW50RGVmYXVsdCgpO1xuICAgICAgc2V0RGVmZXJyZWRQcm9tcHQoZSk7XG4gICAgfTtcblxuICAgIHdpbmRvdy5hZGRFdmVudExpc3RlbmVyKCdiZWZvcmVpbnN0YWxscHJvbXB0JywgaGFuZGxlQmVmb3JlSW5zdGFsbCk7XG5cbiAgICB3aW5kb3cuYWRkRXZlbnRMaXN0ZW5lcignYXBwaW5zdGFsbGVkJywgKCkgPT4ge1xuICAgICAgc2V0SXNJbnN0YWxsZWQodHJ1ZSk7XG4gICAgICBzZXREZWZlcnJlZFByb21wdChudWxsKTtcbiAgICB9KTtcblxuICAgIHJldHVybiAoKSA9PiB7XG4gICAgICB3aW5kb3cucmVtb3ZlRXZlbnRMaXN0ZW5lcignYmVmb3JlaW5zdGFsbHByb21wdCcsIGhhbmRsZUJlZm9yZUluc3RhbGwpO1xuICAgIH07XG4gIH0sIFtdKTtcblxuICBpZiAoaXNJbnN0YWxsZWQpIHtcbiAgICByZXR1cm4gbnVsbDsgLy8gRG9uJ3Qgc2hvdyBpZiBhbHJlYWR5IGluc3RhbGxlZFxuICB9XG5cbiAgY29uc3QgaGFuZGxlSW5zdGFsbENsaWNrID0gYXN5bmMgKCkgPT4ge1xuICAgIGlmIChkZWZlcnJlZFByb21wdCkge1xuICAgICAgZGVmZXJyZWRQcm9tcHQucHJvbXB0KCk7XG4gICAgICBjb25zdCBjaG9pY2UgPSBhd2FpdCBkZWZlcnJlZFByb21wdC51c2VyQ2hvaWNlO1xuICAgICAgaWYgKGNob2ljZS5vdXRjb21lID09PSAnYWNjZXB0ZWQnKSB7XG4gICAgICAgIHNldElzSW5zdGFsbGVkKHRydWUpO1xuICAgICAgfVxuICAgICAgc2V0RGVmZXJyZWRQcm9tcHQobnVsbCk7XG4gICAgfSBlbHNlIGlmIChpc0lvcykge1xuICAgICAgc2V0U2hvd0lvc01vZGFsKHRydWUpO1xuICAgIH0gZWxzZSB7XG4gICAgICBzZXRTaG93SW9zTW9kYWwodHJ1ZSk7IC8vIFNob3cgbWFudWFsIGd1aWRlXG4gICAgfVxuICB9O1xuXG4gIHJldHVybiAoXG4gICAgPD5cbiAgICAgIDxidXR0b25cbiAgICAgICAgdHlwZT1cImJ1dHRvblwiXG4gICAgICAgIGNsYXNzTmFtZT1cImJ0bi1wd2EtaW5zdGFsbFwiXG4gICAgICAgIG9uQ2xpY2s9e2hhbmRsZUluc3RhbGxDbGlja31cbiAgICAgICAgdGl0bGU9XCJJbnN0YWxsIE0uQS5CIFRSQURFUlMgQXBwbGljYXRpb24gb24gUGhvbmUgb3IgUENcIlxuICAgICAgPlxuICAgICAgICA8U21hcnRwaG9uZSBzaXplPXsxNn0gLz5cbiAgICAgICAgPHNwYW4+SW5zdGFsbCBBcHA8L3NwYW4+XG4gICAgICA8L2J1dHRvbj5cblxuICAgICAgey8qIE1hbnVhbCAvIGlPUyBJbnN0cnVjdGlvbnMgTW9kYWwgKi99XG4gICAgICB7c2hvd0lvc01vZGFsICYmIChcbiAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJpbnN0YWxsLW1vZGFsLWJhY2tkcm9wXCIgb25DbGljaz17KCkgPT4gc2V0U2hvd0lvc01vZGFsKGZhbHNlKX0+XG4gICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJpbnN0YWxsLW1vZGFsLWJveFwiIG9uQ2xpY2s9eyhlKSA9PiBlLnN0b3BQcm9wYWdhdGlvbigpfT5cbiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiaW5zdGFsbC1tb2RhbC1oZWFkZXJcIj5cbiAgICAgICAgICAgICAgPGgzPvCfk7IgSG93IHRvIEluc3RhbGwgdGhlIEFwcDwvaDM+XG4gICAgICAgICAgICAgIDxidXR0b24gY2xhc3NOYW1lPVwiYnRuLWNsb3NlLWluc3RhbGxcIiBvbkNsaWNrPXsoKSA9PiBzZXRTaG93SW9zTW9kYWwoZmFsc2UpfT5cbiAgICAgICAgICAgICAgICA8WCBzaXplPXsxOH0gLz5cbiAgICAgICAgICAgICAgPC9idXR0b24+XG4gICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiaW5zdGFsbC1tb2RhbC1ib2R5XCI+XG4gICAgICAgICAgICAgIHtpc0lvcyA/IChcbiAgICAgICAgICAgICAgICA8b2wgY2xhc3NOYW1lPVwiaW5zdGFsbC1zdGVwc1wiPlxuICAgICAgICAgICAgICAgICAgPGxpPkluIFNhZmFyaSBicm93c2VyLCB0YXAgdGhlIDxzdHJvbmc+U2hhcmUgQnV0dG9uIFvijotdPC9zdHJvbmc+IGF0IHRoZSBib3R0b20uPC9saT5cbiAgICAgICAgICAgICAgICAgIDxsaT5TY3JvbGwgZG93biBhbmQgdGFwIDxzdHJvbmc+J0FkZCB0byBIb21lIFNjcmVlbic8L3N0cm9uZz4uPC9saT5cbiAgICAgICAgICAgICAgICAgIDxsaT5UYXAgPHN0cm9uZz4nQWRkJzwvc3Ryb25nPiBpbiB0aGUgdG9wLXJpZ2h0IGNvcm5lci4gVGhlIGFwcCB3aWxsIGJlIGluc3RhbGxlZCBvbiB5b3VyIGRldmljZSE8L2xpPlxuICAgICAgICAgICAgICAgIDwvb2w+XG4gICAgICAgICAgICAgICkgOiAoXG4gICAgICAgICAgICAgICAgPG9sIGNsYXNzTmFtZT1cImluc3RhbGwtc3RlcHNcIj5cbiAgICAgICAgICAgICAgICAgIDxsaT5DbGljayB0aGUgPHN0cm9uZz50aHJlZSBkb3RzIG1lbnUgKOKLrik8L3N0cm9uZz4gaW4gdGhlIGJyb3dzZXIncyB0b3AtcmlnaHQgY29ybmVyLjwvbGk+XG4gICAgICAgICAgICAgICAgICA8bGk+U2VsZWN0IDxzdHJvbmc+J0luc3RhbGwgTS5BLkIgVFJBREVSUyc8L3N0cm9uZz4gb3IgPHN0cm9uZz4nQWRkIHRvIEhvbWUgU2NyZWVuJzwvc3Ryb25nPi48L2xpPlxuICAgICAgICAgICAgICAgICAgPGxpPlRoZSBhcHAgd2lsbCBpbnN0YWxsIGluIG9uZSBjbGljayBhbmQgb3BlbiBsaWtlIGEgbmF0aXZlIGFwcCE8L2xpPlxuICAgICAgICAgICAgICAgIDwvb2w+XG4gICAgICAgICAgICAgICl9XG4gICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiaW5zdGFsbC1tb2RhbC1mb290ZXJcIj5cbiAgICAgICAgICAgICAgPGJ1dHRvblxuICAgICAgICAgICAgICAgIHR5cGU9XCJidXR0b25cIlxuICAgICAgICAgICAgICAgIGNsYXNzTmFtZT1cImJ0bi1tb2RhbC1nb3QtaXRcIlxuICAgICAgICAgICAgICAgIG9uQ2xpY2s9eygpID0+IHNldFNob3dJb3NNb2RhbChmYWxzZSl9XG4gICAgICAgICAgICAgID5cbiAgICAgICAgICAgICAgICBDbG9zZVxuICAgICAgICAgICAgICA8L2J1dHRvbj5cbiAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgIDwvZGl2PlxuICAgICAgICA8L2Rpdj5cbiAgICAgICl9XG4gICAgPC8+XG4gICk7XG59XG4iXX0=

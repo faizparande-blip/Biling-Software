@@ -37,7 +37,34 @@ export const DEFAULT_SETTINGS = {
   },
 };
 
+// Production Deployment Guard:
+// One-time automatic cleanup of pre-deployment test bills from Dexie IndexedDB.
+// Ensures Bill No. 01 sequence start upon fresh deployment while preserving user settings.
+const DEPLOYMENT_INIT_KEY = 'mab_prod_deployment_v1_0';
+
+export const initializeFreshDeployment = async () => {
+  try {
+    const isInitialized = localStorage.getItem(DEPLOYMENT_INIT_KEY);
+    if (!isInitialized) {
+      await db.bills.clear();
+      localStorage.setItem(DEPLOYMENT_INIT_KEY, 'true');
+      console.log('[MAB Deploy] Initialized fresh production state. All testing bills cleared.');
+    }
+  } catch (err) {
+    console.warn('[MAB Deploy] Error during deployment initialization:', err);
+  }
+};
+
 export const localDbService = {
+  /**
+   * Reset all bills for fresh deployment / maintenance
+   * Preserves application settings.
+   */
+  async clearAllBills() {
+    await db.bills.clear();
+    return true;
+  },
+
   /**
    * Get next sequential receipt number
    */

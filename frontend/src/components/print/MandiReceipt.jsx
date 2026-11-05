@@ -165,7 +165,7 @@ const MandiReceipt = forwardRef(({ billData, printSettings = {} }, ref) => {
             <div className="meta-cell meta-no">
               <span className="meta-label">पावती क्र.</span>
               <span className="meta-val receipt-number-badge font-mono">
-                #{String(receipt_no).padStart(4, '0')}
+                #{String(receipt_no || 1).padStart(2, '0')}
               </span>
             </div>
             <div className="meta-cell meta-date">

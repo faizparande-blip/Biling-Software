@@ -183,14 +183,21 @@ export default function MandiBillingForm({
               </label>
               <input
                 id="receipt_no"
-                type="number"
-                value={receipt_no || ''}
-                onChange={(e) =>
-                  onChangeBillData('receipt_no', e.target.value ? Number(e.target.value) : '')
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={
+                  receipt_no !== undefined && receipt_no !== null && receipt_no !== ''
+                    ? String(receipt_no).padStart(2, '0')
+                    : ''
                 }
+                onChange={(e) => {
+                  const val = e.target.value.trim();
+                  onChangeBillData('receipt_no', val === '' ? '' : Number(val));
+                }}
                 onKeyDown={(e) => handleKeyDown(e, billDateRef)}
                 className="input-large font-bold text-red"
-                placeholder="e.g. 0001"
+                placeholder="01"
               />
             </div>
 
@@ -318,7 +325,8 @@ export default function MandiBillingForm({
                             id={`item-pishvi-${index}`}
                             type="number"
                             min="0"
-                            value={row.pishvi === 0 ? '' : row.pishvi}
+                            value={row.pishvi === undefined || row.pishvi === null ? 0 : row.pishvi}
+                            onFocus={(e) => e.target.select()}
                             onChange={(e) =>
                               onChangeItemField(index, 'pishvi', e.target.value)
                             }
@@ -333,7 +341,8 @@ export default function MandiBillingForm({
                             type="number"
                             step="0.01"
                             min="0"
-                            value={row.vajan === 0 ? '' : row.vajan}
+                            value={row.vajan === undefined || row.vajan === null ? 0 : row.vajan}
+                            onFocus={(e) => e.target.select()}
                             onChange={(e) =>
                               onChangeItemField(index, 'vajan', e.target.value)
                             }
@@ -348,12 +357,13 @@ export default function MandiBillingForm({
                             type="number"
                             step="1"
                             min="0"
-                            value={row.bhav === 0 ? '' : row.bhav}
+                            value={row.bhav === undefined || row.bhav === null ? 0 : row.bhav}
+                            onFocus={(e) => e.target.select()}
                             onChange={(e) =>
                               onChangeItemField(index, 'bhav', e.target.value)
                             }
                             onKeyDown={(e) => handleItemKeyDown(e, index, 'bhav')}
-                            placeholder="₹ Rate"
+                            placeholder="0"
                             className="input-cell font-bold"
                           />
                         </td>
@@ -430,7 +440,8 @@ export default function MandiBillingForm({
                     type="number"
                     step="0.01"
                     min="0"
-                    value={expenses[exp.key] === 0 ? '' : expenses[exp.key]}
+                    value={expenses[exp.key] === undefined || expenses[exp.key] === null ? 0 : expenses[exp.key]}
+                    onFocus={(e) => e.target.select()}
                     onChange={(e) => onChangeExpenseField(exp.key, e.target.value)}
                     placeholder="0.00"
                     className="expense-input font-mono"

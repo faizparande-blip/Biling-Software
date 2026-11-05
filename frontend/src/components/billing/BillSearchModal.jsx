@@ -126,7 +126,7 @@ export default function BillSearchModal({
                 {billsList.map((bill) => (
                   <tr key={bill.id || bill.receipt_no}>
                     <td className="receipt-no-col">
-                      #{String(bill.receipt_no).padStart(4, '0')}
+                      #{String(bill.receipt_no).padStart(2, '0')}
                     </td>
                     <td className="font-mono">{bill.bill_date}</td>
                     <td className="farmer-name-cell">{bill.farmer_name}</td>

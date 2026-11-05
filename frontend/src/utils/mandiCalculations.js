@@ -91,14 +91,16 @@ export const getInitialEmptyBill = (nextReceiptNo = 1) => {
   const year = today.getFullYear();
   const formattedDate = `${day}/${month}/${year}`;
 
+  // Fresh deployment default: exactly ONE item row with all numeric fields initialized to 0
   const initialItems = [
     {
       id: 'row-1',
-      pishvi: 50,
-      vajan: 2500,
-      bhav: 2800,
-      amount: 70000,
-      rupaye: 70000,
+      item_name: '',
+      pishvi: 0,
+      vajan: 0,
+      bhav: 0,
+      amount: 0,
+      rupaye: 0,
       paise: 0,
     },
   ];
@@ -118,7 +120,7 @@ export const getInitialEmptyBill = (nextReceiptNo = 1) => {
 
   const initialBill = {
     id: null,
-    receipt_no: nextReceiptNo,
+    receipt_no: nextReceiptNo || 1,
     bill_date: formattedDate,
     farmer_name: '',
     account_no: '',
@@ -130,6 +132,8 @@ export const getInitialEmptyBill = (nextReceiptNo = 1) => {
     gross_amount: 0,
     total_deductions: 0,
     net_payable: 0,
+    paid_amount: 0,
+    balance_amount: 0,
     notes: '',
   };
 

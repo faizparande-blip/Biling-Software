@@ -9,7 +9,7 @@ import {
   getInitialEmptyBill, 
   recalculateCompleteBill 
 } from '../utils/mandiCalculations';
-import { localDbService } from '../db/mabDb';
+import { localDbService, initializeFreshDeployment } from '../db/mabDb';
 import { excelBackupService } from '../services/excelBackupService';
 import { triggerReliablePrint } from '../utils/printHelper';
 import { 
@@ -75,6 +75,9 @@ export default function BillingPage() {
   // Load next available receipt number and settings on mount
   useEffect(() => {
     const init = async () => {
+      // Initialize fresh production deployment state (clears old testing bills once)
+      await initializeFreshDeployment();
+
       // Load print settings from Dexie
       const savedPrintSettings = await localDbService.getSetting('print_settings');
       if (savedPrintSettings) {
@@ -118,6 +121,7 @@ export default function BillingPage() {
     setBillData((prev) => {
       const newRow = {
         id: `row-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+        item_name: '',
         pishvi: 0,
         vajan: 0,
         bhav: 0,

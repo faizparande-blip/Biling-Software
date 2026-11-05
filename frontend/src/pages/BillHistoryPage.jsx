@@ -220,7 +220,7 @@ export default function BillHistoryPage({ onSelectBillToEdit }) {
                 {bills.map((b) => (
                   <tr key={b.id || b.receipt_no}>
                     <td className="receipt-badge-cell">
-                      #{String(b.receipt_no).padStart(4, '0')}
+                      #{String(b.receipt_no).padStart(2, '0')}
                     </td>
                     <td className="font-mono">{b.bill_date}</td>
                     <td className="farmer-name-text">{b.farmer_name}</td>
