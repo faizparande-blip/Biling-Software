@@ -1,0 +1,36 @@
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.mab-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.mab-table th,
+.mab-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.mab-table th {
+  background-color: #f8fafc;
+  color: #475569;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+
+.mab-table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+.table-empty {
+  text-align: center;
+  padding: 32px;
+  color: #94a3b8;
+  font-style: italic;
+}

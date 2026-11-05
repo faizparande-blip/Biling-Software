@@ -1,0 +1,32 @@
+{
+  "name": "M.A.B TRADERS",
+  "short_name": "MAB Traders",
+  "description": "कांदा, बटाटे, लसूण व शेंगा कमिशन एजंट पावती बिलिंग ऍप्लिकेशन - सोलापूर",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fbf9f2",
+  "theme_color": "#b91c1c",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["business", "finance", "productivity"]
+}
